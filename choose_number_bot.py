@@ -1,7 +1,8 @@
 import telebot
 from telebot import types
+from utils.bot_token import choose_bot_token
 
-bot = telebot.TeleBot("7438499030:AAEXkd5sV-sND1eqy6m-IHMAX9JEftpztvk")
+bot = telebot.TeleBot(choose_bot_token)
 
 range_start = None
 range_end = None
