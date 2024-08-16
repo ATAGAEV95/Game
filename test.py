@@ -1,10 +1,9 @@
 from telebot import TeleBot
 from telebot import types
 import random
+from utils.bot_token import guess_bot_token
 
-TOKEN = '6485989521:AAHyr3-YbhSJIe5FAdKehT_GrNXFo5G2tqY'
-
-bot = TeleBot(TOKEN)
+bot = TeleBot(guess_bot_token)
 
 a, b, x, count = None, None, None, 0
 
