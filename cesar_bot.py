@@ -1,9 +1,8 @@
 import logging
-import asyncio
 import psycopg2
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
-from utils.bot_token import test_bot
+from utils.bot_token import cesar_bot_token
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -27,7 +26,6 @@ def cezar(text, k):
             result += char
     return result
 
-
 def get_db_connection():
     return psycopg2.connect(
         dbname='postgres',
@@ -36,7 +34,6 @@ def get_db_connection():
         host='5.44.41.133',
         port='5432'
     )
-
 
 def log_message(message_type, message_text, user_id=None, username=None):
     connection = get_db_connection()
@@ -51,50 +48,34 @@ def log_message(message_type, message_text, user_id=None, username=None):
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    welcome_text = 'Привет! Отправь текст и шаг сдвига в формате "текст ~ шаг".'
-    log_message("Sent", welcome_text)
-    await update.message.reply_text(welcome_text)
-
-
-async def delete_message_after_delay(message, delay):
-    await asyncio.sleep(delay)
-    await message.delete()
+    await update.message.reply_text('Привет! Отправь текст и шаг сдвига в формате "текст ~ шаг".')
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    response_message = None
     try:
         input_data = update.message.text.split('~')
         user_id = update.message.from_user.id
         username = update.message.from_user.username
         log_message("Received", update.message.text, user_id, username)
         if len(input_data) != 2:
-            response_message = await update.message.reply_text('Неверный формат. Используйте: "текст ~ шаг".')
+            await update.message.reply_text('Неверный формат. Используйте: "текст ~ шаг".')
             log_message("Sent", 'Неверный формат. Используйте: "текст ~ шаг".', user_id, username)
-            asyncio.create_task(delete_message_after_delay(update.message, 20))
-            asyncio.create_task(delete_message_after_delay(response_message, 20) if response_message else asyncio.sleep(0))
             return
         text, k = input_data[0].strip(), int(input_data[1].strip())
-        if len(text) > 1000:
-            response_message = await update.message.reply_text(
-                'Текст слишком длинный, максимальная длина - 1000 символов.')
+        if len(text) > 3000:
+            await update.message.reply_text('Текст слишком длинный, максимальная длина - 3000 символов.')
             log_message("Sent", 'Текст слишком длинный, максимальная длина - 3000 символов.', user_id, username)
-            asyncio.create_task(delete_message_after_delay(update.message, 20))
-            asyncio.create_task(delete_message_after_delay(response_message, 20))
             return
         encrypted_text = cezar(text, k)
-        response_message = await update.message.reply_text(encrypted_text)
+        await update.message.reply_text(encrypted_text)
         log_message("Sent", encrypted_text, user_id, username)
     except ValueError:
-        response_message = await update.message.reply_text('Ошибка: убедитесь, что шаг - это число.')
+        await update.message.reply_text('Ошибка: убедитесь, что шаг - это число.')
         log_message("Sent", 'Ошибка: убедитесь, что шаг - это число.', user_id, username)
-    asyncio.create_task(delete_message_after_delay(update.message, 20))
-    if response_message:
-        asyncio.create_task(delete_message_after_delay(response_message, 20))
 
 
 if __name__ == '__main__':
-    app = ApplicationBuilder().token(test_bot).build()
+    app = ApplicationBuilder().token(cesar_bot_token).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     app.run_polling()

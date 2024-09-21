@@ -16,7 +16,7 @@ def save_attempts(attempts_dict, filename):
 
 def play_game(guess_number):
     start_number = 1
-    end_number = 1000000
+    end_number = 100
     count = 0
 
     while True:
@@ -35,10 +35,12 @@ def main():
     filename = 'attempts_record.json'
     attempts_dict = load_attempts(filename)
 
-    for guess_number in range(1, 1000001):
+    for guess_number in range(1, 101):
         if str(guess_number) not in attempts_dict:
             attempts = play_game(guess_number)
             attempts_dict[str(guess_number)] = attempts
 
+    save_attempts(attempts_dict, filename)
 
-attempts_record = main()
+
+main()

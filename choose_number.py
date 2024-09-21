@@ -40,4 +40,3 @@ def choose_number():
     choose_number()
 
 choose_number()
-# Написать код для чтобы узнать какие числа угадает за меньше попыток
