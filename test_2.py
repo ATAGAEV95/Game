@@ -1,10 +1,11 @@
 from telegram.ext import Updater
 import logging
+from utils.bot_token import test_2_bot
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
-TOKEN = '7890928323:AAGkIVlJS7BcHh5z-64nAwriYoHRjVoPx1w'
+TOKEN = test_2_bot
 # получаем экземпляр `Updater`
 updater = Updater(token=TOKEN, use_context=True)
 # получаем экземпляр `Dispatcher`
