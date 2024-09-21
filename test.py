@@ -3,7 +3,7 @@ import asyncio
 import psycopg2
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
-from utils.bot_token import test_bot
+from utils.bot_token import test_bot, password_postgres, host_postgres
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -32,8 +32,8 @@ def get_db_connection():
     return psycopg2.connect(
         dbname='postgres',
         user='atagaev',
-        password='Superflash95',
-        host='5.44.41.133',
+        password=password_postgres,
+        host=host_postgres,
         port='5432'
     )
 
